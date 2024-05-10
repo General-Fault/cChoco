@@ -120,6 +120,11 @@ function Set-TargetResource
                 if ($Version) {
                     Write-Verbose -Message "Uninstalling $Name due to version mis-match"
                     UninstallPackage -pName $Name -pParams $Params
+                    
+                    if (IsPackageInstalled -pName $Name) {
+                        throw "Failed to uninstall $Name, cannot continue"
+                    }
+
                     Write-Verbose -Message "Re-Installing $Name with correct version $versionToInstall"
                     InstallPackage -pName $Name -pParams $Params -pVersion $versionToInstall -pSource $Source -cParams $chocoParams
                 }
