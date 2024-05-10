@@ -294,6 +294,11 @@ function InstallPackage
     $packageInstallOuput = Invoke-Expression -Command $cmd
     Write-Verbose -Message "Package output $packageInstallOuput"
 
+    if ($LASTEXITCODE -in 350,1604) {
+        Write-Verbose -Message "Package has requested a reboot."
+        $global:DSCMachineStatus = 1
+    }
+
     # Clear Package Cache
     Get-ChocoInstalledPackage -Purge
 
@@ -330,6 +335,11 @@ function UninstallPackage
     $packageUninstallOuput = Invoke-Expression -Command $cmd
 
     Write-Verbose -Message "Package uninstall output $packageUninstallOuput "
+
+    if ($LASTEXITCODE -in 350,1604) {
+        Write-Verbose -Message "Package has requested a reboot."
+        $global:DSCMachineStatus = 1
+    }
 
     # Clear Package Cache
     Get-ChocoInstalledPackage -Purge
@@ -489,6 +499,11 @@ Function Upgrade-Package {
 
     $packageUpgradeOuput = Invoke-Expression -Command $cmd
     $packageUpgradeOuput | ForEach-Object { Write-Verbose -Message $_ }
+
+    if ($LASTEXITCODE -in 350,1604) {
+        Write-Verbose -Message "Package has requested a reboot."
+        $global:DSCMachineStatus = 1
+    }
 
     # Clear Package Cache
     Get-ChocoInstalledPackage -Purge
